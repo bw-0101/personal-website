@@ -12,7 +12,7 @@
 | 路由 | 不引入 react-router | 单页 + 锚点滚动 + 博客详情用状态切换，部署无需 SPA fallback |
 | 动画 | 原生 Canvas + IntersectionObserver | 轻量，无第三方动画库依赖 |
 | 数据 | TypeScript 数据模块（src/data/*.ts） | 与组件解耦，新增内容不动代码 |
-| 部署 | Cloudflare Pages（静态托管，免费 CDN） | 全球加速、自动识别 Vite、Git 推送自动部署 |
+| 部署 | GitHub Pages（gh-pages 分支静态托管，免费） | 免服务器、GitHub 原生集成，国内可达性尚可 |
 
 ## 二、项目结构
 

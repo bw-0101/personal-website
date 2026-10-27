@@ -6,7 +6,7 @@
 
 - 个人展示网站「终端极光 / Circuit Aurora」，深色科技风单页应用。
 - 技术栈：**React 18 + TypeScript + Vite + Tailwind CSS v4**，禁止引入 react-router 与重型 UI/动画库。
-- 部署目标：Cloudflare Pages（纯静态 `dist/`）。
+- 部署目标：GitHub Pages（`gh-pages` 分支，静态 `dist/` 产物；构建 base 为相对路径）。
 
 ## 二、开发规范
 

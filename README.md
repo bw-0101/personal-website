@@ -26,7 +26,9 @@ src/lib/markdown.tsx                  # 极简安全 Markdown 渲染
 
 ## 部署
 
-推送到 GitHub 后，在 Cloudflare Pages 导入仓库：框架预设 **Vite**，构建命令 `npm run build`，输出目录 `dist`。
+已部署到 **GitHub Pages**：https://bw-0101.github.io/personal-website/
+
+流程：构建产物推送到 `gh-pages` 分支（含 `.nojekyll`，站点文件在分支根目录），仓库 Pages 设置指向该分支即可。后续更新：重新构建后再次推送 gh-pages 分支。
 
 ## 个性化提示
 
