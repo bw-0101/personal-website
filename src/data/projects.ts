@@ -6,6 +6,7 @@ export interface Project {
   tags: string[]
   tech: string[]
   date: string
+  cover: string
   link?: string
 }
 
@@ -14,10 +15,11 @@ export const projects: Project[] = [
     id: 'circuit-aurora',
     title: 'Circuit Aurora 个人网站',
     summary: '本网站：AI 全流程开发，从 PRD 到部署的完整实践。',
-    desc: '以「终端极光」为主题的个人展示网站，深度实践文档先行方法论：先写 PRD、技术设计、AGENTS 三份文档，再让 AI 分步实现，最后部署到 Cloudflare Pages。包含终端开机动画、极光 Canvas 背景、响应式布局与本地数据驱动的博客模块。',
-    tags: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Cloudflare Pages'],
+    desc: '以「终端极光」为主题的个人展示网站，深度实践文档先行方法论：先写 PRD、技术设计、AGENTS 三份文档，再让 AI 分步实现，最后部署到 GitHub Pages。包含终端开机动画、极光 Canvas 背景、响应式布局与本地数据驱动的博客模块。',
+    tags: ['React', 'TypeScript', 'Vite', 'Tailwind', 'GitHub Pages'],
     tech: ['React 18', 'TypeScript', 'Vite', 'Tailwind v4', 'Canvas API'],
     date: '2026-10',
+    cover: './images/proj-website.png',
   },
   {
     id: 'mcs51-alarm',
@@ -27,6 +29,7 @@ export const projects: Project[] = [
     tags: ['mCS51', 'Keil5', 'C', '嵌入式'],
     tech: ['mCS51', 'Keil5', 'C51', 'Proteus 仿真'],
     date: '2025-11',
+    cover: './images/proj-mcu.png',
   },
   {
     id: 'dachuang-iot',
@@ -36,6 +39,7 @@ export const projects: Project[] = [
     tags: ['物联网', 'Git', '团队协作', '软著'],
     tech: ['ESP32', 'MQTT', 'Git', 'C / Python'],
     date: '2025-06',
+    cover: './images/proj-iot.png',
   },
   {
     id: 'sd-workflow',
@@ -45,5 +49,6 @@ export const projects: Project[] = [
     tags: ['Python', 'Stable Diffusion', 'AIGC'],
     tech: ['Python', 'Stable Diffusion WebUI', 'ControlNet', 'ComfyUI'],
     date: '2025-08',
+    cover: './images/proj-ai.png',
   },
 ]

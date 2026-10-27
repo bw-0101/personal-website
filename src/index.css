@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0a0d12;
-  --color-ink-2: #10151d;
-  --color-ink-3: #161d28;
-  --color-teal: #2de5b0;
-  --color-amber: #ffb84d;
-  --color-violet: #8b7cff;
-  --color-mist: #d6dee8;
-  --color-mute: #7a8699;
+  --color-paper: #F3F7F5;
+  --color-card: #FFFFFF;
+  --color-ink: #F3F7F5;
+  --color-ink-2: #FFFFFF;
+  --color-ink-3: #E7F0EC;
+  --color-teal: #0A9169;
+  --color-teal-soft: #3ED9A7;
+  --color-amber: #C2680A;
+  --color-violet: #5B4AD6;
+  --color-mist: #14211C;
+  --color-mute: #5F7068;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-display: "Space Grotesk", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --font-sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
@@ -20,7 +23,7 @@ html {
 }
 
 body {
-  background-color: var(--color-ink);
+  background-color: var(--color-paper);
   color: var(--color-mist);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -28,32 +31,32 @@ body {
 }
 
 ::selection {
-  background: rgba(45, 229, 176, 0.28);
-  color: #eafff6;
+  background: rgba(10, 145, 105, 0.18);
+  color: #0b3d2e;
 }
 
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0d12;
+  background: #eef3f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f2836;
+  background: #c8d8cf;
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2de5b0;
+  background: #0a9169;
 }
 
-/* 电路网格背景（叠加在 canvas 之上） */
+/* 浅色电路网格 */
 .bg-circuit {
   background-image:
-    linear-gradient(rgba(45, 229, 176, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(45, 229, 176, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(10, 145, 105, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 145, 105, 0.05) 1px, transparent 1px);
   background-size: 46px 46px;
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 30%, transparent 78%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 20%, black 25%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 20%, black 25%, transparent 75%);
 }
 
 /* 滚动渐入 */
@@ -69,29 +72,45 @@ body {
   transform: none;
 }
 
-/* 霓虹描边卡片 */
+/* 浅色卡片 */
 .neon-card {
   position: relative;
-  border: 1px solid rgba(45, 229, 176, 0.16);
-  background: linear-gradient(180deg, rgba(16, 21, 29, 0.9), rgba(10, 13, 18, 0.85));
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  background: var(--color-card);
+  border: 1px solid #e2ebe6;
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(20, 33, 28, 0.04),
+    0 10px 28px rgba(20, 33, 28, 0.05);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 .neon-card:hover {
-  border-color: rgba(45, 229, 176, 0.5);
-  box-shadow: 0 0 24px rgba(45, 229, 176, 0.12), inset 0 0 18px rgba(45, 229, 176, 0.04);
+  border-color: rgba(10, 145, 105, 0.45);
+  box-shadow:
+    0 0 0 3px rgba(10, 145, 105, 0.08),
+    0 14px 36px rgba(10, 145, 105, 0.12);
   transform: translateY(-3px);
 }
 
-/* 技能熟练度条：区块可见后从 0 增长到 var(--w) */
-.skill-fill {
-  width: 0%;
-  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+/* 终端窗口（保留深色作焦点对比） */
+.terminal-window {
+  background: linear-gradient(180deg, #101714, #0c1310);
+  border: 1px solid #1e2b24;
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(20, 33, 28, 0.12),
+    0 24px 60px rgba(10, 50, 38, 0.22);
 }
-.reveal.visible .skill-fill {
-  width: var(--w, 0%);
+.terminal-window .term-text {
+  color: #d6ead9;
+}
+.terminal-window .term-dim {
+  color: #6f8a7d;
 }
 
-/* 终端光标闪烁 */
+/* 终端光标 */
 @keyframes caret-blink {
   0%, 55% { opacity: 1; }
   56%, 100% { opacity: 0; }
@@ -100,27 +119,37 @@ body {
   display: inline-block;
   width: 9px;
   height: 1.15em;
-  background: var(--color-teal);
+  background: var(--color-teal-soft);
   vertical-align: text-bottom;
   animation: caret-blink 1s step-end infinite;
 }
 
-/* 极光光斑（纯 CSS fallback / 装饰） */
 .aurora-blob {
   position: absolute;
   border-radius: 9999px;
   filter: blur(90px);
-  opacity: 0.55;
+  opacity: 0.5;
   pointer-events: none;
 }
 
-/* 打字机光标 */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
 }
 .fade-up {
   animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 技能条轨道与填充 */
+.skill-track {
+  background: #e7f0ec;
+}
+.skill-fill {
+  width: 0%;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible .skill-fill {
+  width: var(--w, 0%);
 }
 
 @media (prefers-reduced-motion: reduce) {

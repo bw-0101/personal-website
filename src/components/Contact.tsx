@@ -37,7 +37,7 @@ export default function Contact() {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-white/12 bg-ink/70 px-4 py-3 text-sm text-mist placeholder:text-mute/50 outline-none transition-colors focus:border-teal/60'
+    'w-full rounded-lg border border-[#D8E3DC] bg-white px-4 py-3 text-sm text-mist placeholder:text-mute/50 outline-none transition-colors focus:border-teal focus:ring-2 focus:ring-teal/15'
 
   return (
     <section id="contact" className="mx-auto max-w-[1180px] scroll-mt-24 px-5 py-24">
@@ -49,21 +49,21 @@ export default function Contact() {
 
         <div className="mt-10 grid gap-6 lg:grid-cols-5">
           {/* 联系方式 */}
-          <div className="neon-card rounded-xl p-6 lg:col-span-2">
+          <div className="neon-card p-6 lg:col-span-2">
             <h3 className="font-mono text-sm font-semibold text-amber">直接找我</h3>
             <div className="mt-5 space-y-4 text-sm">
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-ink/60 px-4 py-3">
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-[#E2EBE6] bg-paper px-4 py-3">
                 <span className="font-mono text-xs text-mute">email</span>
                 <span className="truncate text-mist">{profile.email}</span>
                 <button
                   type="button"
                   onClick={copyEmail}
-                  className="shrink-0 rounded border border-teal/40 px-2.5 py-1 font-mono text-[11px] text-teal transition-colors hover:bg-teal hover:text-ink"
+                  className="shrink-0 rounded border border-teal/40 px-2.5 py-1 font-mono text-[11px] text-teal transition-colors hover:bg-teal hover:text-white"
                 >
                   {copied ? '✓ 已复制' : '复制'}
                 </button>
               </div>
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-ink/60 px-4 py-3">
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-[#E2EBE6] bg-paper px-4 py-3">
                 <span className="font-mono text-xs text-mute">github</span>
                 <a
                   href={profile.socials.github}
@@ -74,7 +74,7 @@ export default function Contact() {
                   github.com/your-github
                 </a>
               </div>
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-ink/60 px-4 py-3">
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-[#E2EBE6] bg-paper px-4 py-3">
                 <span className="font-mono text-xs text-mute">bilibili</span>
                 <a
                   href={profile.socials.bilibili}
@@ -92,10 +92,10 @@ export default function Contact() {
           </div>
 
           {/* 表单 */}
-          <div className="neon-card rounded-xl p-6 lg:col-span-3">
+          <div className="neon-card p-6 lg:col-span-3">
             <h3 className="font-mono text-sm font-semibold text-amber">留言板</h3>
             {status === 'sent' ? (
-              <div className="mt-8 rounded-lg border border-teal/30 bg-teal/10 p-6 text-center">
+              <div className="mt-8 rounded-lg border border-teal/30 bg-teal/5 p-6 text-center">
                 <p className="font-display text-lg font-semibold text-teal">消息已提交 ✓</p>
                 <p className="mt-2 text-sm text-mute">感谢留言（演示模式，未真正发送）。</p>
                 <button
@@ -104,7 +104,7 @@ export default function Contact() {
                     setStatus('idle')
                     setForm({ name: '', email: '', message: '' })
                   }}
-                  className="mt-5 rounded-lg border border-white/15 px-4 py-2 font-mono text-sm text-mist transition-colors hover:border-teal/50 hover:text-teal"
+                  className="mt-5 rounded-lg border border-[#D8E3DC] px-4 py-2 font-mono text-sm text-mist transition-colors hover:border-teal hover:text-teal"
                 >
                   再写一条
                 </button>
@@ -152,7 +152,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === 'sending'}
-                  className="w-full rounded-lg border border-teal/60 bg-teal/10 px-5 py-3 font-mono text-sm text-teal transition-all hover:bg-teal hover:text-ink disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                  className="w-full rounded-lg bg-teal px-5 py-3 font-mono text-sm text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                 >
                   {status === 'sending' ? '发送中…' : '$ send_message'}
                 </button>

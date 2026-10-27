@@ -18,7 +18,7 @@ export default function Skills() {
 
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {skillGroups.map((group, gi) => (
-            <div key={group.category} className="neon-card rounded-xl p-6">
+            <div key={group.category} className="neon-card p-6">
               <div className="flex items-center gap-2">
                 <span className="text-xl">{group.icon}</span>
                 <h3 className="font-mono text-sm font-semibold text-mist">{group.category}</h3>
@@ -30,7 +30,7 @@ export default function Skills() {
                       <span className="text-[13px] text-mist/90">{s.name}</span>
                       <span className="font-mono text-[11px] text-mute">{s.level}%</span>
                     </div>
-                    <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/8">
+                    <div className="skill-track mt-1.5 h-1.5 overflow-hidden rounded-full">
                       <div
                         className="skill-fill h-full rounded-full bg-gradient-to-r from-teal to-violet"
                         style={{ '--w': `${s.level}%`, transitionDelay: `${gi * 80 + si * 60}ms` } as CSSProperties}

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 /**
- * 极光背景：墨黑底 + 流动的荧光青绿/紫罗兰光斑 + 电路网格。
+ * 极光背景：浅色底上的淡青绿/紫罗兰光斑 + 电路网格。
  * - 尊重 prefers-reduced-motion（只画静态帧）
  * - 移动端（宽度 < 640px）光斑数量减半
  */
@@ -31,8 +31,8 @@ export default function AuroraBackground() {
       r: 160 + Math.random() * 240,
       vx: (Math.random() - 0.5) * 0.22,
       vy: (Math.random() - 0.5) * 0.18,
-      hue: i % 2 === 0 ? 163 : 256, // 青绿 / 紫罗兰
-      alpha: 0.05 + Math.random() * 0.05,
+      hue: i % 2 === 0 ? 160 : 252,
+      alpha: 0.09 + Math.random() * 0.06,
       phase: Math.random() * Math.PI * 2,
     }))
 
@@ -62,9 +62,9 @@ export default function AuroraBackground() {
           if (b.y < -b.r) b.y = h + b.r
           if (b.y > h + b.r) b.y = -b.r
         }
-        const pulse = reduceMotion ? 1 : 0.8 + Math.sin(b.phase) * 0.2
+        const pulse = reduceMotion ? 1 : 0.85 + Math.sin(b.phase) * 0.15
         const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r)
-        grad.addColorStop(0, `hsla(${b.hue}, 82%, 58%, ${b.alpha * pulse})`)
+        grad.addColorStop(0, `hsla(${b.hue}, 68%, 60%, ${b.alpha * pulse})`)
         grad.addColorStop(1, 'transparent')
         ctx.fillStyle = grad
         ctx.beginPath()
@@ -75,11 +75,8 @@ export default function AuroraBackground() {
       if (!reduceMotion) raf = requestAnimationFrame(draw)
     }
 
-    if (reduceMotion) {
-      draw() // 只画一帧静态
-    } else {
-      raf = requestAnimationFrame(draw)
-    }
+    if (reduceMotion) draw()
+    else raf = requestAnimationFrame(draw)
 
     return () => {
       cancelAnimationFrame(raf)
@@ -91,8 +88,8 @@ export default function AuroraBackground() {
     <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       <div className="bg-circuit absolute inset-0" />
-      <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-ink to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-ink to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-paper to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-paper to-transparent" />
     </div>
   )
 }

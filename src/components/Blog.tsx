@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { posts, type Post } from '../data/posts'
-import { useReveal } from '../hooks/useReveal'
 import Markdown from '../lib/markdown'
+import { useReveal } from '../hooks/useReveal'
 
 export default function Blog() {
   const ref = useReveal<HTMLDivElement>()
@@ -15,82 +15,72 @@ export default function Blog() {
           blog<span className="text-teal">()</span>
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-mute">
-          踩坑记录与学习复盘。新增文章：在 <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-xs text-amber">src/data/posts.ts</code> 里加一条即可。
+          记录开发笔记、踩坑复盘与学习方法。
         </p>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <div className="mt-10 space-y-4">
           {posts.map((p) => (
             <button
               key={p.id}
               type="button"
-              onClick={() => {
-                setActive(p)
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }}
-              className="neon-card group rounded-xl p-6 text-left"
+              onClick={() => setActive(p)}
+              className="neon-card group flex w-full flex-col items-start gap-3 p-6 text-left sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="flex items-center justify-between gap-3">
+              <div>
                 <span className="font-mono text-xs text-mute">{p.date}</span>
-                <span className="font-mono text-xs text-teal/0 transition-colors group-hover:text-teal">read →</span>
+                <h3 className="mt-1.5 font-display text-lg font-semibold text-mist transition-colors group-hover:text-teal">
+                  {p.title}
+                </h3>
+                <p className="mt-1 text-sm text-mute">{p.summary}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {p.tags.map((t) => (
+                    <span key={t} className="rounded border border-violet/25 bg-violet/5 px-2 py-0.5 font-mono text-[11px] text-violet">
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <h3 className="mt-3 font-display text-lg font-semibold leading-snug text-mist transition-colors group-hover:text-teal">
-                {p.title}
-              </h3>
-              <p className="mt-2 line-clamp-2 text-sm leading-6 text-mute">{p.summary}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {p.tags.map((t) => (
-                  <span key={t} className="rounded border border-amber/25 bg-amber/5 px-2 py-0.5 font-mono text-[11px] text-amber/90">
-                    {t}
-                  </span>
-                ))}
-              </div>
+              <span className="shrink-0 font-mono text-xs text-teal transition-transform group-hover:translate-x-1">
+                阅读 →
+              </span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* 文章详情 */}
+      {/* 文章弹窗 */}
       {active && (
-        <div className="fixed inset-0 z-[60] overflow-y-auto bg-ink/97 backdrop-blur-sm">
-          <div className="mx-auto min-h-full max-w-3xl px-5 py-16">
-            <div className="fade-up">
+        <div
+          className="fixed inset-0 z-[60] overflow-y-auto bg-black/50 p-4 backdrop-blur-sm sm:p-10"
+          onClick={() => setActive(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={active.title}
+        >
+          <article
+            className="mx-auto max-w-3xl rounded-2xl border border-[#E2EBE6] bg-card p-6 sm:p-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="font-mono text-xs text-teal">{active.date}</p>
+                <h2 className="mt-2 font-display text-2xl font-bold text-mist sm:text-3xl">{active.title}</h2>
+              </div>
               <button
                 type="button"
                 onClick={() => setActive(null)}
-                className="rounded-lg border border-white/15 px-4 py-2 font-mono text-sm text-mute transition-colors hover:border-teal/50 hover:text-teal"
+                aria-label="关闭文章"
+                className="shrink-0 rounded-md border border-[#D8E3DC] p-2 text-mute transition-colors hover:border-teal hover:text-teal"
               >
-                ← 返回列表
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M4 4l8 8M12 4L4 12" strokeLinecap="round" />
+                </svg>
               </button>
-
-              <header className="mt-8">
-                <p className="font-mono text-xs text-mute">{active.date}</p>
-                <h1 className="mt-3 font-display text-3xl font-bold leading-tight text-mist sm:text-4xl">
-                  {active.title}
-                </h1>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {active.tags.map((t) => (
-                    <span key={t} className="rounded border border-amber/25 bg-amber/5 px-2 py-0.5 font-mono text-[11px] text-amber/90">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </header>
-
-              <article className="mt-8 border-t border-white/10 pt-8">
-                <Markdown source={active.content} />
-              </article>
-
-              <footer className="mt-12 border-t border-white/10 pt-6">
-                <button
-                  type="button"
-                  onClick={() => setActive(null)}
-                  className="rounded-lg border border-teal/60 bg-teal/10 px-5 py-2.5 font-mono text-sm text-teal transition-all hover:bg-teal hover:text-ink"
-                >
-                  ← 回到博客列表
-                </button>
-              </footer>
             </div>
-          </div>
+            <div className="markdown-body mt-8">
+              <Markdown source={active.content} />
+            </div>
+          </article>
         </div>
       )}
     </section>
