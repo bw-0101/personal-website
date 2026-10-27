@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10151D"/>
+      <stop offset="1" stop-color="#0A0D12"/>
+    </linearGradient>
+    <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2DE5B0"/>
+      <stop offset="1" stop-color="#8B7CFF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0" stop-color="#2DE5B0" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#2DE5B0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="260" height="260" fill="url(#bg)"/>
+  <rect width="260" height="260" fill="url(#glow)"/>
+
+  <!-- 电路网格 -->
+  <g stroke="#2DE5B0" stroke-opacity="0.07" stroke-width="1">
+    <path d="M0 40h260M0 80h260M0 120h260M0 160h260M0 200h260"/>
+    <path d="M40 0v260M80 0v260M120 0v260M160 0v260M200 0v260"/>
+  </g>
+
+  <!-- 头部轮廓（几何化侧面） -->
+  <g fill="none" stroke="url(#fg)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M92 74c14-10 38-14 60-6 18 7 30 24 32 46 2 24-12 42-34 50-14 5-34 4-46-2-8-4-12-14-10-24 1-8 6-14 14-16 10-2 18 4 20 14 2 8-2 16-10 20"/>
+    <path d="M126 92c10 0 18 8 18 18s-8 18-18 18"/>
+    <circle cx="150" cy="110" r="3.2" fill="#2DE5B0" stroke="none"/>
+  </g>
+
+  <!-- 数据流动线 -->
+  <g stroke="#2DE5B0" stroke-width="2.5" stroke-linecap="round" opacity="0.9">
+    <path d="M50 190h70"/>
+    <circle cx="50" cy="190" r="3.5" fill="#2DE5B0" stroke="none"/>
+    <circle cx="70" cy="190" r="3.5" fill="#2DE5B0" stroke="none"/>
+    <circle cx="90" cy="190" r="3.5" fill="#2DE5B0" stroke="none"/>
+  </g>
+  <g stroke="#8B7CFF" stroke-width="2.5" stroke-linecap="round" opacity="0.85">
+    <path d="M210 190h-60"/>
+    <circle cx="150" cy="190" r="3.5" fill="none"/>
+    <circle cx="170" cy="190" r="3.5" fill="none"/>
+    <circle cx="190" cy="190" r="3.5" fill="none"/>
+  </g>
+
+  <!-- 底部终端状态 -->
+  <text x="130" y="228" text-anchor="middle" font-family="'Courier New', monospace" font-size="13" fill="#7A8699" letter-spacing="3">bw · 2024</text>
+</svg>
