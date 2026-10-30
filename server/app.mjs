@@ -576,8 +576,12 @@ const server = http.createServer(async (req, res) => {
   }
 })
 
-server.listen(PORT, () => {
-  console.log(`\n  Circuit Aurora 已启动  →  http://localhost:${PORT}`)
-  console.log(`  后台                    →  http://localhost:${PORT}/admin`)
+// 显式监听所有网卡：云服务器上必须 0.0.0.0，否则外网访问不到
+const HOST = process.env.HOST || '0.0.0.0'
+
+server.listen(PORT, HOST, () => {
+  console.log(`\n  Circuit Aurora 已启动  →  http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`)
+  console.log(`  后台                    →  http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}/admin`)
+  console.log(`  监听地址                →  ${HOST}:${PORT}`)
   console.log(`  数据文件                →  ${path.join(DATA_DIR, 'site.db')}\n`)
 })
