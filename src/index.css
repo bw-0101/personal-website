@@ -1,159 +1,238 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Circuit Aurora · 纸与墨（Paper & Ink）
+   浅色、杂志化的排版：象牙白纸面、近黑墨色、朱红做唯一重音。
+   ============================================================ */
 @theme {
-  --color-paper: #F3F7F5;
-  --color-card: #FFFFFF;
-  --color-ink: #F3F7F5;
-  --color-ink-2: #FFFFFF;
-  --color-ink-3: #E7F0EC;
-  --color-teal: #0A9169;
-  --color-teal-soft: #3ED9A7;
-  --color-amber: #C2680A;
-  --color-violet: #5B4AD6;
-  --color-mist: #14211C;
-  --color-mute: #5F7068;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-display: "Space Grotesk", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  /* 纸与墨 */
+  --color-paper: #faf8f4;
+  --color-paper-2: #f3efe7;
+  --color-paper-3: #ebe5da;
+  --color-ink: #171412;
+  --color-ink-2: #3b342e;
+  --color-ink-3: #6b6359;
+  --color-mute: #8a8378;
+  --color-line: #e2dbce;
+  --color-line-2: #d3c9b8;
+
+  /* 重音：朱红（印章色）+ 墨绿（点缀） */
+  --color-vermil: #b23a2e;
+  --color-vermil-soft: #d4574a;
+  --color-moss: #3f5f4a;
+
+  /* 字体 */
+  --font-display: "Spectral", "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+  --font-serif: "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
   --font-sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* 节奏 */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 84px;
+  scroll-padding-top: 96px;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: var(--color-paper);
-  color: var(--color-mist);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
 ::selection {
-  background: rgba(10, 145, 105, 0.18);
-  color: #0b3d2e;
+  background: rgba(178, 58, 46, 0.14);
+  color: var(--color-ink);
 }
 
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #eef3f0;
+  background: var(--color-paper);
 }
 ::-webkit-scrollbar-thumb {
-  background: #c8d8cf;
-  border-radius: 6px;
+  background: var(--color-line-2);
+  border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #0a9169;
+  background: var(--color-ink-3);
 }
 
-/* 浅色电路网格 */
-.bg-circuit {
-  background-image:
-    linear-gradient(rgba(10, 145, 105, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 145, 105, 0.05) 1px, transparent 1px);
-  background-size: 46px 46px;
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 20%, black 25%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 20%, black 25%, transparent 75%);
+/* ---------- 版式工具 ---------- */
+
+/* 页眉里那个朱红小方块，像一枚印章（跟随字号，最大 14px） */
+.seal {
+  display: inline-block;
+  width: clamp(6px, 0.4em, 14px);
+  height: clamp(6px, 0.4em, 14px);
+  background: var(--color-vermil);
+  vertical-align: 0.12em;
 }
 
-/* 滚动渐入 */
+/* 章节编号：01 —— 02 —— 03 */
+.section-no {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+/* 发丝级分隔线 */
+.hairline {
+  border-top: 1px solid var(--color-line);
+}
+
+/* 大标题：衬线 + 收紧字距 */
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  color: var(--color-ink);
+}
+
+/* 竖排小字，用于边注 */
+.vert {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.24em;
+}
+
+/* 背景纸纹（极淡杂点，移动端不显示，省电也省眼） */
+.paper-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background-image: radial-gradient(rgba(23, 20, 18, 0.055) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+/* ---------- 滚动渐入 ---------- */
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translateY(18px);
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.75s var(--ease-out-soft),
+    transform 0.75s var(--ease-out-soft);
 }
 .reveal.visible {
   opacity: 1;
   transform: none;
 }
 
-/* 浅色卡片 */
-.neon-card {
-  position: relative;
-  background: var(--color-card);
-  border: 1px solid #e2ebe6;
-  border-radius: 16px;
-  box-shadow:
-    0 1px 2px rgba(20, 33, 28, 0.04),
-    0 10px 28px rgba(20, 33, 28, 0.05);
+/* 逐条错位 */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(14px);
   transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease,
-    transform 0.3s ease;
+    opacity 0.6s var(--ease-out-soft),
+    transform 0.6s var(--ease-out-soft);
 }
-.neon-card:hover {
-  border-color: rgba(10, 145, 105, 0.45);
-  box-shadow:
-    0 0 0 3px rgba(10, 145, 105, 0.08),
-    0 14px 36px rgba(10, 145, 105, 0.12);
-  transform: translateY(-3px);
-}
-
-/* 终端窗口（保留深色作焦点对比） */
-.terminal-window {
-  background: linear-gradient(180deg, #101714, #0c1310);
-  border: 1px solid #1e2b24;
-  border-radius: 16px;
-  box-shadow:
-    0 1px 2px rgba(20, 33, 28, 0.12),
-    0 24px 60px rgba(10, 50, 38, 0.22);
-}
-.terminal-window .term-text {
-  color: #d6ead9;
-}
-.terminal-window .term-dim {
-  color: #6f8a7d;
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0.04s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.1s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.22s; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.28s; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.34s; }
+.reveal-stagger.visible > * {
+  opacity: 1;
+  transform: none;
 }
 
-/* 终端光标 */
+/* ---------- 链接下划线动画 ---------- */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s var(--ease-out-soft);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- 终端 ---------- */
+.caret {
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  background: var(--color-vermil);
+  vertical-align: text-bottom;
+  animation: caret-blink 1.05s step-end infinite;
+}
 @keyframes caret-blink {
   0%, 55% { opacity: 1; }
   56%, 100% { opacity: 0; }
 }
-.caret {
-  display: inline-block;
-  width: 9px;
-  height: 1.15em;
-  background: var(--color-teal-soft);
-  vertical-align: text-bottom;
-  animation: caret-blink 1s step-end infinite;
-}
 
-.aurora-blob {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: none; }
-}
-.fade-up {
-  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* 技能条轨道与填充 */
+/* ---------- 技能条：细线，不渐变 ---------- */
 .skill-track {
-  background: #e7f0ec;
+  background: var(--color-line);
+  height: 2px;
 }
 .skill-fill {
   width: 0%;
-  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--color-ink);
+  transition: width 1s var(--ease-out-soft);
+}
+.skill-item[data-accent="1"] .skill-fill {
+  background: var(--color-vermil);
 }
 .reveal.visible .skill-fill {
   width: var(--w, 0%);
 }
 
+/* ---------- 文章正文 ---------- */
+.prose-ink p {
+  margin: 0 0 1.15em;
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  line-height: 1.9;
+  color: var(--color-ink-2);
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-up {
+  animation: fade-up 0.7s var(--ease-out-soft) both;
+}
+
+@keyframes slow-pan {
+  from { transform: scale(1.04) translate3d(0, 0, 0); }
+  to { transform: scale(1.04) translate3d(-1.5%, -1%, 0); }
+}
+
+/* 移动端：降低装饰强度 */
+@media (max-width: 640px) {
+  .paper-grain::before { display: none; }
+  html { scroll-padding-top: 76px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal { transition: none; opacity: 1; transform: none; }
+  .reveal, .reveal-stagger > * { transition: none; opacity: 1; transform: none; }
   * { animation-duration: 0.001s !important; }
 }

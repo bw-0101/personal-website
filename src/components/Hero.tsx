@@ -1,117 +1,108 @@
-import { useEffect, useRef, useState } from 'react'
 import { profile } from '../data/profile'
 
-const LINES: { cmd: string; out: string }[] = [
-  { cmd: 'whoami', out: `${profile.name} · ${profile.title}` },
-  { cmd: 'cat ./tagline.txt', out: profile.tagline },
-  { cmd: './build --target 92-uni --major electronics', out: '构建中… 电子信息考研 · 冲刺阶段' },
+const COLOPHON = [
+  { k: '身份', v: profile.title },
+  { k: '坐标', v: profile.location },
+  { k: '状态', v: '备考冲刺 · 开放交流' },
 ]
 
 export default function Hero() {
-  const [lineIdx, setLineIdx] = useState(0)
-  const [charIdx, setCharIdx] = useState(0)
-  const [done, setDone] = useState(false)
-  const reduceMotion = useRef(
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
-
-  useEffect(() => {
-    if (reduceMotion.current) {
-      setLineIdx(LINES.length)
-      setDone(true)
-      return
-    }
-    if (lineIdx >= LINES.length) return
-    const line = LINES[lineIdx]
-    if (charIdx < line.cmd.length) {
-      const t = window.setTimeout(() => setCharIdx((c) => c + 1), 46)
-      return () => window.clearTimeout(t)
-    }
-    const t = window.setTimeout(() => {
-      setLineIdx((i) => i + 1)
-      setCharIdx(0)
-    }, 620)
-    return () => window.clearTimeout(t)
-  }, [lineIdx, charIdx])
-
-  useEffect(() => {
-    if (lineIdx >= LINES.length) {
-      const t = window.setTimeout(() => setDone(true), 500)
-      return () => window.clearTimeout(t)
-    }
-  }, [lineIdx])
-
   return (
-    <section id="top" className="relative mx-auto flex min-h-screen max-w-[1180px] flex-col items-center justify-center gap-12 px-5 pb-20 pt-28 lg:flex-row lg:justify-between lg:gap-10">
-      {/* 终端打字机 */}
-      <div className="w-full max-w-[640px]">
-        <p className="mb-4 font-mono text-[13px] text-mute">
-          <span className="text-teal">➜</span> ~ <span className="text-amber">个人系统 v1.0</span>
-          <span className="ml-2 text-mute/60">// 2026 运行中</span>
-        </p>
-
-        <div className="terminal-window p-6 font-mono text-[15px] leading-relaxed sm:p-8 sm:text-base">
-          {LINES.slice(0, lineIdx + 1).map((l, i) => {
-            const isLast = i === lineIdx
-            const typing = isLast && charIdx < l.cmd.length
-            return (
-              <div key={i} className="mb-3">
-                <div className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="shrink-0 font-bold text-teal-soft">$</span>
-                  <span className="whitespace-pre-wrap break-all term-text">
-                    {isLast ? l.cmd.slice(0, charIdx) : l.cmd}
-                  </span>
-                  {isLast && <span className="caret" />}
-                </div>
-                {!typing && (
-                  <p className="mt-1.5 text-[13px] term-dim sm:text-sm">
-                    <span className="mr-1 text-teal-soft/70">→</span> {l.out}
-                  </p>
-                )}
-              </div>
-            )
-          })}
+    <section id="top" className="relative">
+      <div className="mx-auto max-w-[1200px] px-6 pb-16 pt-32 sm:px-8 sm:pt-40 lg:pb-24 lg:pt-48">
+        {/* 刊头信息 */}
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-ink/80 pb-4">
+          <p className="section-no">No.01 — 2026</p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <a
+              href="#contact"
+              className="hidden items-center gap-2 font-mono text-[11px] tracking-widest text-ink-3 transition-colors hover:text-vermil sm:flex"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-moss" aria-hidden />
+              开放交流中
+            </a>
+            <a
+              href={`mailto:${profile.email}`}
+              className="font-mono text-[11px] tracking-widest text-ink-3 transition-colors hover:text-vermil"
+            >
+              {profile.email}
+            </a>
+          </div>
         </div>
 
-        <div className={`mt-8 flex flex-wrap gap-3 ${done ? 'fade-up' : 'opacity-0'}`}>
-          <a
-            href="#projects"
-            className="rounded-lg border border-teal bg-teal px-5 py-2.5 font-mono text-sm text-white transition-all hover:brightness-110 hover:shadow-[0_8px_24px_rgba(10,145,105,0.35)]"
-          >
-            ./view_projects
-          </a>
-          <a
-            href="#contact"
-            className="rounded-lg border border-teal/30 bg-white px-5 py-2.5 font-mono text-sm text-teal transition-colors hover:border-teal hover:bg-teal/5"
-          >
-            ./contact_me
-          </a>
-          <span className="hidden items-center font-mono text-xs text-mute sm:flex">
-            <span className="mr-2 h-1.5 w-1.5 animate-pulse rounded-full bg-teal" />
-            status: open to collaborate
-          </span>
-        </div>
-      </div>
+        {/* 标题区 */}
+        <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-8">
+            <h1 className="display text-[clamp(3.2rem,10vw,7.5rem)]">
+              边&nbsp;伟
+              <span className="seal ml-3 align-baseline" aria-hidden />
+            </h1>
+            <p className="mt-3 font-mono text-[13px] tracking-[0.28em] text-ink-3">
+              BIAN&nbsp;WEI&nbsp;·&nbsp;CIRCUIT&nbsp;AURORA
+            </p>
 
-      {/* 头像卡片 */}
-      <div className="shrink-0">
-        <div className="relative">
-          <div className="aurora-blob left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 bg-teal/20" />
-          <div className="neon-card relative overflow-hidden p-3">
-            <img
-              src="./images/avatar.png"
-              alt={`${profile.name} 的头像插画`}
-              width={260}
-              height={260}
-              className="block rounded-xl"
-            />
-            <div className="mt-3 flex items-center justify-between px-1">
-              <span className="font-mono text-xs text-mute">uid: bw-2024</span>
-              <span className="flex items-center gap-1.5 font-mono text-xs text-teal">
-                <span className="h-1.5 w-1.5 rounded-full bg-teal" /> online
-              </span>
+            <p className="mt-10 max-w-2xl font-serif text-xl leading-[1.85] text-ink-2 sm:text-[22px]">
+              {profile.tagline}
+            </p>
+
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+              <a
+                href="#projects"
+                className="group inline-flex items-center justify-between gap-6 bg-ink px-6 py-4 text-sm text-paper transition-colors hover:bg-vermil sm:justify-start"
+              >
+                <span>看作品</span>
+                <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>
+                  →
+                </span>
+              </a>
+              <a
+                href="#contact"
+                className="group inline-flex items-center justify-between gap-6 border border-ink/20 px-6 py-4 text-sm text-ink transition-colors hover:border-ink sm:justify-start"
+              >
+                <span>留下句话</span>
+                <span className="text-ink-3 transition-transform duration-300 group-hover:translate-x-1" aria-hidden>
+                  ↗
+                </span>
+              </a>
             </div>
           </div>
+
+          {/* 右栏：名片 + 克制的小终端 */}
+          <aside className="lg:col-span-4 lg:pl-6">
+            <div className="border-t border-line lg:border-l lg:border-t-0 lg:pl-8">
+              <p className="section-no pt-6 lg:pt-0">colophon</p>
+              <dl className="mt-6 space-y-4">
+                {COLOPHON.map((row) => (
+                  <div key={row.k} className="grid grid-cols-[3.5rem_1fr] items-baseline gap-3">
+                    <dt className="font-mono text-[11px] tracking-widest text-mute">{row.k}</dt>
+                    <dd className="text-sm leading-6 text-ink-2">{row.v}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div className="mt-8 border border-line bg-paper-2 p-4">
+                <div className="flex items-center gap-1.5 pb-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-vermil/70" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-line-2" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-line-2" />
+                  <span className="ml-2 font-mono text-[10px] tracking-widest text-mute">~/bian-wei</span>
+                </div>
+                <pre className="overflow-x-auto font-mono text-[12px] leading-6 text-ink-2">
+                  <span className="text-vermil">$</span> whoami{'\n'}
+                  <span className="text-mute">→</span> {profile.name} · 本科在读{'\n'}
+                  <span className="text-vermil">$</span> status{'\n'}
+                  <span className="text-mute">→</span> 备考中，欢迎技术交流<span className="caret ml-1" />
+                </pre>
+              </div>
+
+              <a
+                href="#about"
+                className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] tracking-widest text-mute transition-colors hover:text-vermil"
+              >
+                ↓ 向下滚动
+              </a>
+            </div>
+          </aside>
         </div>
       </div>
     </section>

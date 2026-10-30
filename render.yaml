@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: personal-website
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: node server/app.mjs
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      # 下面三个请在 Render 控制台手动填写（不要写进仓库）
+      # ADMIN_PASSWORD  后台登录密码，必填
+      # SESSION_SECRET  Cookie 签名密钥，必填（>=32 位随机串）
+      # DATA_DIR        数据目录，默认 ./data

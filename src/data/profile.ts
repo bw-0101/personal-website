@@ -16,7 +16,7 @@ export const profile: Profile = {
   email: 'hi@bianwei.dev',
   location: '大连 · 中国',
   socials: {
-    github: 'https://github.com/your-github',
+    github: 'https://github.com/bw-0101',
     bilibili: 'https://space.bilibili.com/your-uid',
     qq: '3344893942@qq.com',
   },

@@ -1,39 +1,39 @@
 import type { CSSProperties } from 'react'
 import { skillGroups } from '../data/skills'
 import { useReveal } from '../hooks/useReveal'
+import SectionHead from './SectionHead'
 
 export default function Skills() {
   const ref = useReveal<HTMLDivElement>()
 
   return (
-    <section id="skills" className="mx-auto max-w-[1180px] scroll-mt-24 px-5 py-24">
-      <div ref={ref} className="reveal">
-        <p className="font-mono text-xs text-teal">// 02</p>
-        <h2 className="mt-2 font-display text-3xl font-bold text-mist sm:text-4xl">
-          skills<span className="text-teal">()</span>
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-mute">
-          以「能用它做出东西」为准绳的自我评估。熟练度条代表实践深度，不代表知识边界。
-        </p>
+    <section id="skills" className="scroll-mt-24">
+      <div ref={ref} className="reveal mx-auto max-w-[1200px] px-6 py-20 sm:px-8 sm:py-28">
+        <SectionHead
+          no="02"
+          title="技能"
+          en="SKILLS"
+          lead="以「能用它做出东西」为准绳的自我评估。细线长度代表实践深度，不代表知识边界。"
+        />
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
           {skillGroups.map((group, gi) => (
-            <div key={group.category} className="neon-card p-6">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{group.icon}</span>
-                <h3 className="font-mono text-sm font-semibold text-mist">{group.category}</h3>
+            <div key={group.category} className="border-t border-line pt-5">
+              <div className="flex items-baseline justify-between">
+                <h3 className="font-serif text-lg text-ink">{group.category}</h3>
+                <span className="font-mono text-[11px] text-mute">{String(gi + 1).padStart(2, '0')}</span>
               </div>
-              <ul className="mt-5 space-y-4">
+              <ul className="mt-5 space-y-5">
                 {group.skills.map((s, si) => (
-                  <li key={s.name}>
+                  <li key={s.name} className="skill-item" data-accent={si === 0 ? '1' : '0'}>
                     <div className="flex items-baseline justify-between gap-3">
-                      <span className="text-[13px] text-mist/90">{s.name}</span>
-                      <span className="font-mono text-[11px] text-mute">{s.level}%</span>
+                      <span className="text-[13.5px] text-ink-2">{s.name}</span>
+                      <span className="font-mono text-[11px] tabular-nums text-mute">{s.level}</span>
                     </div>
-                    <div className="skill-track mt-1.5 h-1.5 overflow-hidden rounded-full">
+                    <div className="skill-track mt-2 overflow-hidden">
                       <div
-                        className="skill-fill h-full rounded-full bg-gradient-to-r from-teal to-violet"
-                        style={{ '--w': `${s.level}%`, transitionDelay: `${gi * 80 + si * 60}ms` } as CSSProperties}
+                        className="skill-fill"
+                        style={{ '--w': `${s.level}%`, transitionDelay: `${gi * 90 + si * 70}ms` } as CSSProperties}
                       />
                     </div>
                   </li>

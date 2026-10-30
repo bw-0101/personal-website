@@ -4,6 +4,15 @@ dist/
 *.local
 *.tsbuildinfo
 
+# 数据库文件（留言数据，不进仓库）
+data/
+*.db
+
+# 环境变量
+.env
+.env.local
+.vercel
+
 # 日志与系统文件
 npm-debug.log*
 yarn-debug.log*

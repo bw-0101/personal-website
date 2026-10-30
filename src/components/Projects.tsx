@@ -1,52 +1,60 @@
-import { useState } from 'react'
-import { projects, type Project } from '../data/projects'
+import { useEffect, useState } from 'react'
+import type { Project } from '../data/projects'
+import { useProjects } from '../hooks/useContent'
 import { useReveal } from '../hooks/useReveal'
+import SectionHead from './SectionHead'
 
 export default function Projects() {
   const ref = useReveal<HTMLDivElement>()
+  const { items } = useProjects()
   const [selected, setSelected] = useState<Project | null>(null)
+  const shown = items.length ? items : []
 
   return (
-    <section id="projects" className="mx-auto max-w-[1180px] scroll-mt-24 px-5 py-24">
-      <div ref={ref} className="reveal">
-        <p className="font-mono text-xs text-teal">// 03</p>
-        <h2 className="mt-2 font-display text-3xl font-bold text-mist sm:text-4xl">
-          projects<span className="text-teal">()</span>
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-mute">
-          一些把「想法 → 文档 → 代码 → 上线」走通的作品。点击卡片查看详情。
-        </p>
+    <section id="projects" className="scroll-mt-24">
+      <div ref={ref} className="reveal mx-auto max-w-[1200px] px-6 py-20 sm:px-8 sm:py-28">
+        <SectionHead no="03" title="项目" en="SELECTED WORK" lead="一些把「想法 → 文档 → 代码 → 上线」走通的作品。点击展开细节。" />
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {projects.map((p) => (
+        <div className="mt-12">
+          {shown.map((p, i) => (
             <button
               key={p.id}
               type="button"
               onClick={() => setSelected(p)}
-              className="neon-card group overflow-hidden p-0 text-left"
+              className="group block w-full border-t border-line py-8 text-left transition-colors last:border-b hover:bg-paper-2/60 sm:py-10"
             >
-              <div className="relative h-44 overflow-hidden">
-                <img
-                  src={p.cover}
-                  alt={`${p.title} 项目封面`}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <span className="absolute right-3 top-3 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[11px] text-white backdrop-blur-sm">
-                  {p.date}
-                </span>
-              </div>
-              <div className="p-6">
-                <h3 className="font-display text-xl font-semibold text-mist transition-colors group-hover:text-teal">
-                  {p.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-mute">{p.summary}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {p.tags.map((t) => (
-                    <span key={t} className="rounded border border-teal/25 bg-teal/5 px-2 py-0.5 font-mono text-[11px] text-teal">
-                      {t}
-                    </span>
-                  ))}
+              <div className="grid items-start gap-6 px-0 sm:px-2 lg:grid-cols-[1fr_240px] lg:gap-12">
+                <div className="flex items-baseline gap-5">
+                  <span className="font-mono text-[11px] tracking-widest text-mute">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <div>
+                    <h3 className="display text-2xl transition-colors group-hover:text-vermil sm:text-3xl">
+                      {p.title}
+                    </h3>
+                    <p className="mt-3 max-w-xl font-serif text-[15px] leading-[1.85] text-ink-3">{p.summary}</p>
+                    <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
+                      {p.tags.map((t) => (
+                        <span key={t} className="font-mono text-[11px] tracking-wider text-mute">
+                          #{t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-4">
+                  <span className="hidden shrink-0 font-mono text-[11px] tracking-widest text-mute lg:block">
+                    {p.date}
+                  </span>
+                  <div className="aspect-[16/10] w-full max-w-[280px] overflow-hidden bg-paper-2 lg:w-[200px] lg:max-w-none">
+                    <img
+                      src={p.cover}
+                      alt={`${p.title} 封面`}
+                      loading="lazy"
+                      className="h-full w-full object-cover grayscale-[35%] transition-all duration-700 group-hover:scale-[1.03] group-hover:grayscale-0"
+                    />
+                  </div>
                 </div>
               </div>
             </button>
@@ -54,62 +62,79 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* 详情弹层 */}
-      {selected && (
-        <div
-          className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-6"
-          onClick={() => setSelected(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={selected.title}
-        >
-          <div
-            className="max-h-[86vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl border border-teal/20 bg-card p-0 sm:rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
+      {selected && <ProjectDialog project={selected} onClose={() => setSelected(null)} />}
+    </section>
+  )
+}
+
+function ProjectDialog({ project, onClose }: { project: Project; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] overflow-y-auto bg-ink/45 p-0 backdrop-blur-[2px] sm:p-8"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={project.title}
+    >
+      <article
+        className="mx-auto min-h-full w-full max-w-3xl bg-paper p-6 sm:min-h-0 sm:p-12"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <p className="section-no">{project.date}</p>
+            <h2 className="display mt-3 text-3xl sm:text-4xl">{project.title}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="关闭详情"
+            className="flex h-9 w-9 shrink-0 items-center justify-center border border-line text-ink-3 transition-colors hover:border-ink hover:text-ink"
           >
-            <div className="relative h-48 overflow-hidden">
-              <img src={selected.cover} alt="" className="h-full w-full object-cover" />
-              <button
-                type="button"
-                onClick={() => setSelected(null)}
-                aria-label="关闭详情"
-                className="absolute right-4 top-4 rounded-md bg-black/45 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6">
-                  <path d="M4 4l8 8M12 4L4 12" strokeLinecap="round" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-6 sm:p-8">
-              <p className="font-mono text-xs text-mute">{selected.date}</p>
-              <h3 className="mt-2 font-display text-2xl font-bold text-mist">{selected.title}</h3>
-              <p className="mt-4 text-[15px] leading-7 text-mist/90">{selected.desc}</p>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+              <path d="M4 4l8 8M12 4L4 12" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
 
-              <div className="mt-6">
-                <h4 className="font-mono text-xs text-amber">tech stack</h4>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {selected.tech.map((t) => (
-                    <span key={t} className="rounded border border-violet/25 bg-violet/5 px-2.5 py-1 font-mono text-xs text-violet">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
+        {project.cover && (
+          <img src={project.cover} alt="" className="mt-8 aspect-[16/9] w-full object-cover" />
+        )}
 
-              {selected.link && (
-                <a
-                  href={selected.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-8 inline-flex items-center gap-2 rounded-lg bg-teal px-5 py-2.5 font-mono text-sm text-white transition-all hover:brightness-110"
-                >
-                  访问项目 <span aria-hidden>↗</span>
-                </a>
-              )}
-            </div>
+        <p className="mt-8 font-serif text-[16.5px] leading-[1.95] text-ink-2">{project.desc}</p>
+
+        <div className="mt-10 border-t border-line pt-6">
+          <p className="section-no">技术栈</p>
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+            {project.tech.map((t) => (
+              <span key={t} className="border border-line px-3 py-1 font-mono text-[11px] tracking-wide text-ink-2">
+                {t}
+              </span>
+            ))}
           </div>
         </div>
-      )}
-    </section>
+
+        {project.link && (
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-10 inline-flex items-center gap-3 bg-ink px-6 py-3.5 text-sm text-paper transition-colors hover:bg-vermil"
+          >
+            访问项目 <span aria-hidden>↗</span>
+          </a>
+        )}
+      </article>
+    </div>
   )
 }

@@ -1,37 +1,85 @@
-# Circuit Aurora · 个人展示网站
+# Circuit Aurora · 个人网站
 
-深色终端美学个人主页：墨黑底 + 电路网格 + 荧光青绿主色 + 极光 Canvas。
+浅色「纸与墨」杂志风个人主页。**一个命令跑起整个站点**：页面、留言接口、后台都在同一个服务里。
 
-## 技术栈
+## 端口说明
 
-React 18 · TypeScript · Vite · Tailwind CSS v4（无路由、纯静态产物）
+本站固定使用 **4173** 端口，与另一个项目「AI 聊天系统」（8000 端口）完全独立，两个可以同时开着用。
 
-## 快速开始
+## 运行
 
 ```bash
 npm install
-npm run dev      # 本地开发 http://localhost:5173
-npm run build    # 产出 dist/
-npm run preview  # 预览构建产物
+npm start          # 构建 + 启动，打开 http://localhost:4173
 ```
+
+就这两条。没有数据库要装、没有云服务要注册、没有环境变量要配。
+
+- 网站首页：http://localhost:4173
+- 后台：http://localhost:4173/admin （密码 `200611bw`）
+- 留言数据：`data/site.db`（首次运行自动创建，已 gitignore）
+
+开发模式（改前端热更新）：
+
+```bash
+npm run server     # 终端 1：起接口，4173 端口
+npm run dev        # 终端 2：起前端，5173 端口，/api 自动转发到 4173
+```
+
+## 它为什么不是「纯静态 HTML」
+
+| | 纯静态站 | 这个站 |
+|---|---|---|
+| 留言 | 假装发送成功，数据丢掉 | **真的存进 SQLite**，后台能看到 |
+| 文章 / 项目 | 改代码才能更新 | **后台在线编辑**，保存即生效 |
+| 后台 | 没有 | 密码登录，管理留言与内容 |
+| 访问统计 | 没有 | 记录每日 PV/UV |
+| 鉴权 | 没有 | HttpOnly Cookie + HMAC 签名，12 小时过期 |
+
+## 在线修改内容
+
+进后台 `/admin` 登录后：
+
+- **留言**：标记已读、删除、点邮箱直接回信
+- **文章**：写新文章、编辑、删除；正文用 Markdown（`##` 小标题、`**加粗**`、`- ` 列表）
+- **项目**：添加、编辑、删除；封面填 `./images/文件名.png`
+
+保存后刷新首页即可看到，**不需要改代码，也不需要重启**。
+首次启动时会把 `src/data/*.ts` 里的初始内容导入数据库，之后以数据库为准；
+想恢复初始内容，删掉 `data/site.db` 重启即可。
+
+## 技术栈
+
+- 前端：React 18 · TypeScript · Vite 6 · Tailwind CSS v4（多页：`index.html` + `admin.html`）
+- 服务端：Node 内置 `http` + `node:sqlite`（Node ≥ 22），**零运行时依赖**
+- 全部后端代码就是 `server/app.mjs` 一个文件
 
 ## 目录
 
 ```
-PRD.md / TECH_DESIGN.md / AGENTS.md   # 文档先行三件套
-src/data/                             # 个人信息 / 技能 / 项目 / 博客数据
-src/components/                       # 页面组件
-src/lib/markdown.tsx                  # 极简安全 Markdown 渲染
+server/app.mjs        服务端：静态托管 + 留言接口 + 后台接口
+src/components/       展示站组件
+src/admin/            后台
+src/data/             个人信息 / 技能 / 项目 / 文章（改内容改这里）
+src/lib/              API 客户端、访问统计、Markdown 渲染
+data/site.db          留言与访问数据（自动生成，不提交）
 ```
 
-## 部署
+## 放到公网
 
-已部署到 **GitHub Pages**：https://bw-0101.github.io/personal-website/
+需要一台能跑 Node 22 的机器（VPS、一台常开的电脑、Render / Railway 都行）：
 
-流程：构建产物推送到 `gh-pages` 分支（含 `.nojekyll`，站点文件在分支根目录），仓库 Pages 设置指向该分支即可。后续更新：重新构建后再次推送 gh-pages 分支。
+```bash
+npm ci
+npm run build
+ADMIN_PASSWORD=你的新密码 PORT=4173 node server/app.mjs
+```
+
+用 `pm2` 或 systemd 保活即可。**一定要设置 `ADMIN_PASSWORD`**，否则会用仓库里的默认密码。
+备份数据就是复制 `data/site.db` 这一个文件。
 
 ## 个性化提示
 
-- 邮箱、GitHub、B 站链接在 `src/data/profile.ts` 中替换；
-- 技能 / 项目 / 文章分别在 `src/data/skills.ts`、`projects.ts`、`posts.ts` 中维护；
-- 头像占位图为 `public/avatar.svg`，可替换为自己的照片（保持 1:1）。
+- 邮箱、GitHub、B 站链接：`src/data/profile.ts`
+  （B 站目前仍是占位链接 `space.bilibili.com/your-uid`，记得换成你的 UID）
+- 技能：`src/data/skills.ts`；项目：`src/data/projects.ts`；文章：`src/data/posts.ts`
