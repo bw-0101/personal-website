@@ -7,8 +7,13 @@ export interface Profile {
   socials: { github: string; bilibili: string; qq: string }
   education: { school: string; major: string; period: string }[]
   timeline: { period: string; title: string; desc: string }[]
+  interests?: string[]
 }
 
+/**
+ * 默认个人资料（后端不可用时的兜底）。
+ * 线上实际显示的内容以数据库为准，在后台「资料」标签页编辑。
+ */
 export const profile: Profile = {
   name: '边伟',
   title: '电子信息 / 物联网工程 · 本科在读',
@@ -44,4 +49,5 @@ export const profile: Profile = {
       desc: '目标冲刺 92 院校电子信息专业；同步搭建个人网站沉淀项目与博客，备战 CET-6。',
     },
   ],
+  interests: ['嵌入式', 'Web 全栈', 'AI 工具链', '数字内容创作'],
 }

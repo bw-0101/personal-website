@@ -1,6 +1,7 @@
-import { profile } from '../data/profile'
+﻿import { useProfile } from '../hooks/useProfile'
 
 export default function Footer() {
+  const profile = useProfile()
   const year = new Date().getFullYear()
   return (
     <footer className="border-t border-ink/80">

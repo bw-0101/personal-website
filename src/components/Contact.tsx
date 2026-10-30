@@ -1,5 +1,5 @@
-import { useEffect, useState, type FormEvent } from 'react'
-import { profile } from '../data/profile'
+﻿import { useEffect, useState, type FormEvent } from 'react'
+import { useProfile } from '../hooks/useProfile'
 import { api, ApiError, isBackendDown } from '../lib/api'
 import { useReveal } from '../hooks/useReveal'
 import SectionHead from './SectionHead'
@@ -10,6 +10,7 @@ type Errors = { name?: string; email?: string; message?: string }
 const EMPTY = { name: '', email: '', message: '', website: '' }
 
 export default function Contact() {
+  const profile = useProfile()
   const ref = useReveal<HTMLDivElement>()
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState<Errors>({})

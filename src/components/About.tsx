@@ -1,8 +1,9 @@
-import { profile } from '../data/profile'
+﻿import { useProfile } from '../hooks/useProfile'
 import { useReveal } from '../hooks/useReveal'
 import SectionHead from './SectionHead'
 
 export default function About() {
+  const profile = useProfile()
   const ref = useReveal<HTMLDivElement>()
 
   return (
@@ -27,7 +28,7 @@ export default function About() {
             </p>
 
             <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-              {['嵌入式', 'Web 全栈', 'AI 工具链', '数字内容创作'].map((tag) => (
+              {(profile.interests ?? []).map((tag) => (
                 <span key={tag} className="flex items-center gap-2 text-sm text-ink-3">
                   <span className="h-1 w-1 bg-vermil" aria-hidden />
                   {tag}

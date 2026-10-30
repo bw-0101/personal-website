@@ -19,6 +19,7 @@ import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { DatabaseSync } from 'node:sqlite'
 import { seedPosts, seedProjects } from './seed-data.mjs'
+import { seedProfile } from './seed-profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist')
@@ -60,6 +61,11 @@ db.exec(`
     visitors TEXT NOT NULL DEFAULT '[]',
     PRIMARY KEY (day)
   );
+  -- 个人资料：整份 JSON 存一行，后台可在线编辑
+  CREATE TABLE IF NOT EXISTS profile (
+    id   INTEGER PRIMARY KEY CHECK (id = 1),
+    data TEXT NOT NULL
+  );
   -- 文章与项目：首次启动时从 src/data 灌入，之后在后台在线编辑
   CREATE TABLE IF NOT EXISTS posts (
     id         TEXT PRIMARY KEY,
@@ -96,6 +102,11 @@ const q = {
      ON CONFLICT(day) DO UPDATE SET views = excluded.views, visitors = excluded.visitors`,
   ),
   allVisits: db.prepare('SELECT * FROM visits ORDER BY day DESC LIMIT 30'),
+
+  getProfile: db.prepare('SELECT data FROM profile WHERE id = 1'),
+  saveProfile: db.prepare(
+    'INSERT INTO profile (id, data) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data',
+  ),
 
   countPosts: db.prepare('SELECT COUNT(*) AS n FROM posts'),
   listPosts: db.prepare('SELECT * FROM posts ORDER BY sort_order ASC'),
@@ -145,6 +156,11 @@ function seed() {
       ),
     )
     console.log(`[seed] 已导入 ${seedProjects.length} 个项目`)
+  }
+  // 个人资料：首次启动写入默认值，之后以数据库为准
+  if (!q.getProfile.get()) {
+    q.saveProfile.run(JSON.stringify(seedProfile))
+    console.log('[seed] 已写入默认个人资料')
   }
 }
 seed()
@@ -256,6 +272,20 @@ const slugOk = (id) => /^[a-z0-9][a-z0-9-]{0,63}$/i.test(id)
 async function api(req, res, url) {
   const route = url.pathname
   const method = req.method
+
+  // 公开：个人资料
+  if (route === '/api/profile' && method === 'GET') {
+    const row = q.getProfile.get()
+    let data = seedProfile
+    if (row) {
+      try {
+        data = JSON.parse(row.data)
+      } catch {
+        /* 数据损坏时回退默认值 */
+      }
+    }
+    return json(res, 200, data)
+  }
 
   // 公开：文章列表 / 单篇
   if (route === '/api/posts' && method === 'GET') {
@@ -437,6 +467,59 @@ async function api(req, res, url) {
       today: rows[0] ? { views: rows[0].views, visitors: JSON.parse(rows[0].visitors).length } : { views: 0, visitors: 0 },
       days: [...rows].reverse().map((r) => ({ day: r.day, views: r.views, visitors: JSON.parse(r.visitors).length })),
     })
+  }
+
+  // ---------- 个人资料管理 ----------
+  if (route === '/api/admin/profile') {
+    if (method === 'GET') {
+      const row = q.getProfile.get()
+      return json(res, 200, row ? JSON.parse(row.data) : seedProfile)
+    }
+    if (method === 'PUT') {
+      const b = await readBody(req)
+      if (!b || typeof b !== 'object') return json(res, 400, { message: '资料格式不正确' })
+      if (text(b.name, 40).length < 1) return json(res, 400, { message: '名字不能为空' })
+      if (b.email && !isEmail(text(b.email, 120))) return json(res, 400, { message: '邮箱格式不正确' })
+
+      // 只保留已知字段，避免写入乱七八糟的内容
+      const clean = {
+        name: text(b.name, 40),
+        title: text(b.title, 100),
+        tagline: text(b.tagline, 300),
+        email: text(b.email, 120),
+        location: text(b.location, 60),
+        socials: {
+          github: text(b.socials?.github, 300),
+          bilibili: text(b.socials?.bilibili, 300),
+          qq: text(b.socials?.qq, 120),
+        },
+        education: Array.isArray(b.education)
+          ? b.education.slice(0, 10).map((e) => ({
+              school: text(e?.school, 80),
+              major: text(e?.major, 120),
+              period: text(e?.period, 60),
+            }))
+          : [],
+        timeline: Array.isArray(b.timeline)
+          ? b.timeline.slice(0, 20).map((t) => ({
+              period: text(t?.period, 60),
+              title: text(t?.title, 80),
+              desc: text(t?.desc, 300),
+            }))
+          : [],
+        skills: Array.isArray(b.skills)
+          ? b.skills
+              .slice(0, 30)
+              .map((s) => ({ name: text(s?.name, 60), level: Math.max(0, Math.min(100, Number(s?.level) || 0)) }))
+              .filter((s) => s.name)
+          : [],
+        interests: Array.isArray(b.interests)
+          ? b.interests.slice(0, 10).map((s) => text(s, 30)).filter(Boolean)
+          : [],
+      }
+      q.saveProfile.run(JSON.stringify(clean))
+      return json(res, 200, { ok: true })
+    }
   }
 
   return json(res, 404, { message: '接口不存在' })

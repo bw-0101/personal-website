@@ -1,12 +1,12 @@
-import { profile } from '../data/profile'
-
-const COLOPHON = [
-  { k: '身份', v: profile.title },
-  { k: '坐标', v: profile.location },
-  { k: '状态', v: '备考冲刺 · 开放交流' },
-]
+import { useProfile } from '../hooks/useProfile'
 
 export default function Hero() {
+  const profile = useProfile()
+  const colophon = [
+    { k: '身份', v: profile.title },
+    { k: '坐标', v: profile.location },
+    { k: '状态', v: '备考冲刺 · 开放交流' },
+  ]
   return (
     <section id="top" className="relative">
       <div className="mx-auto max-w-[1200px] px-6 pb-16 pt-32 sm:px-8 sm:pt-40 lg:pb-24 lg:pt-48">
@@ -72,7 +72,7 @@ export default function Hero() {
             <div className="border-t border-line lg:border-l lg:border-t-0 lg:pl-8">
               <p className="section-no pt-6 lg:pt-0">colophon</p>
               <dl className="mt-6 space-y-4">
-                {COLOPHON.map((row) => (
+                {colophon.map((row) => (
                   <div key={row.k} className="grid grid-cols-[3.5rem_1fr] items-baseline gap-3">
                     <dt className="font-mono text-[11px] tracking-widest text-mute">{row.k}</dt>
                     <dd className="text-sm leading-6 text-ink-2">{row.v}</dd>

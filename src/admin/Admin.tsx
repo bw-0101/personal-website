@@ -1,5 +1,6 @@
-﻿import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { api, ApiError } from '../lib/api'
+import ProfileEditor from './ProfileEditor'
 
 interface Message {
   id: number
@@ -500,9 +501,10 @@ function Projects() {
 
 // ---------------- 后台外壳 ----------------
 
-type Tab = 'messages' | 'posts' | 'projects'
+type Tab = 'profile' | 'messages' | 'posts' | 'projects'
 
 const TABS: { id: Tab; label: string }[] = [
+  { id: 'profile', label: '资料' },
   { id: 'messages', label: '留言' },
   { id: 'posts', label: '文章' },
   { id: 'projects', label: '项目' },
@@ -510,7 +512,7 @@ const TABS: { id: Tab; label: string }[] = [
 
 export default function Admin() {
   const [auth, setAuth] = useState<'loading' | 'out' | 'in'>('loading')
-  const [tab, setTab] = useState<Tab>('messages')
+  const [tab, setTab] = useState<Tab>('profile')
 
   useEffect(() => {
     api<{ authed: boolean }>('/api/admin/login')
@@ -567,6 +569,7 @@ export default function Admin() {
       </header>
 
       <main className="mx-auto max-w-[900px] px-6 py-10">
+        {tab === 'profile' && <ProfileEditor />}
         {tab === 'messages' && <Messages />}
         {tab === 'posts' && <Posts />}
         {tab === 'projects' && <Projects />}

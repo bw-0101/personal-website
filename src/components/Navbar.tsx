@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { profile } from '../data/profile'
+﻿import { useEffect, useState } from 'react'
+import { useProfile } from '../hooks/useProfile'
 
 const LINKS = [
   { id: 'about', label: '关于' },
@@ -10,6 +10,7 @@ const LINKS = [
 ]
 
 export default function Navbar() {
+  const profile = useProfile()
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState('')
   const [scrolled, setScrolled] = useState(false)
